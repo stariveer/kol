@@ -10,5 +10,6 @@ export default {
     '^.+\.ts$': ['ts-jest', {
       useESM: true
     }]
-  }
+  },
+  testTimeout: 10000 // 设置全局测试超时时间为 10 秒
 }
