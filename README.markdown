@@ -1,44 +1,101 @@
-# kol
+# KOL 数据采集项目
 
-项目描述：
-我正在构建一个 Node.js + TypeScript 项目，目标是 抓取加密货币 KOL（Key Opinion Leaders）的帖子 并 降低噪声。我希望使用 成熟且主流的技术栈，减少调试成本，并确保代码风格统一、可维护性高。
+## 项目描述
 
-⸻
+这是一个基于 Node.js + TypeScript 的项目，用于抓取加密货币 KOL（Key Opinion Leaders）的社交媒体帖子并进行数据处理。项目采用主流技术栈，确保代码质量和可维护性。
 
-技术栈：
-• 运行环境: Node.js（最新 LTS 版本）
-• 包管理器: pnpm
-• 语言: TypeScript（严格模式）
-• Web 爬虫: puppeteer / playwright（支持 headless 模式）
-• HTTP 请求: axios / got（用于 API 请求）
-• 数据存储: MongoDB（Mongoose ORM）或 PostgreSQL（Prisma ORM）
-• 日志管理: winston / pino（高性能日志工具）
+## 技术栈
 
-⸻
+- **运行环境**: Node.js（最新 LTS 版本）
+- **包管理器**: pnpm
+- **开发语言**: TypeScript（严格模式）
+- **数据抓取**: @the-convocation/twitter-scraper（Twitter 数据抓取）
+- **HTTP 请求**: axios（API 请求）
+- **日志管理**: winston（高性能日志工具）
 
-开发环境设置：
+## 项目配置
 
-✅ 代码质量（静态分析 & 格式化）：
-• ESLint（代码规范，集成 TypeScript）
-• Prettier（代码格式化，配合 ESLint 使用）
-• CommitLint（规范 Git 提交信息）
-• Husky + lint-staged（在提交代码前进行代码检查和格式化）
-• EditorConfig（保证不同 IDE 之间的代码风格一致）
+### 1. 环境准备
 
-✅ 代码组织：
-• 单一职责原则（SRP）：模块化拆分代码，避免大文件
-• 日志 & 错误处理：全局日志管理，确保爬取异常不会导致程序崩溃
+```bash
+# 安装 pnpm（如果未安装）
+npm install -g pnpm
 
-✅ 测试 & 代码验证：
-• Jest（单元测试框架）
-• Vitest（更快的测试框架，可选）
-• Mock Service Worker (MSW)（用于模拟 API 响应）
+# 安装项目依赖
+pnpm install
+```
 
-✅ CI/CD 集成（可选）：
-• GitHub Actions（自动化代码检查、测试）
-• ESLint + Prettier 检查（在 PR 时运行）
-• Docker 化（后期可考虑）
+### 2. 开发环境配置
 
-⸻
+项目使用以下工具确保代码质量：
 
-目标： 1. 使用 pnpm 初始化 TypeScript 项目，配置 tsconfig.json（严格模式） 2. 安装 & 配置 ESLint、Prettier、CommitLint、Husky 3. 实现基础 Web 爬虫模块，支持 Twitter 4. 添加日志系统，确保爬取异常时有详细日志 5. 编写单元测试，保证核心逻辑的稳定性
+- **ESLint**: 代码规范检查
+- **Prettier**: 代码格式化
+- **CommitLint**: Git 提交信息规范
+- **Husky**: Git Hooks 管理
+- **Jest**: 单元测试框架
+
+### 3. 项目结构
+
+```
+src/
+  ├── scraper/         # 数据抓取模块
+  │   └── twitter.ts   # Twitter 数据抓取实现
+  ├── __tests__/       # 测试文件目录
+  └── index.ts         # 项目入口文件
+```
+
+## 使用指南
+
+### Twitter 数据抓取
+
+```typescript
+import { TwitterKOLScraper } from './scraper/twitter';
+import winston from 'winston';
+
+// 创建日志记录器
+const logger = winston.createLogger({
+  transports: [new winston.transports.Console()],
+});
+
+// 初始化爬虫
+const scraper = new TwitterKOLScraper({
+  logger,
+  maxTweets: 100, // 可选：设置最大抓取推文数量
+});
+
+// 抓取用户推文
+async function fetchTweets(username: string) {
+  const tweets = await scraper.fetchUserTweets(username);
+  console.log(`获取到 ${tweets.length} 条推文`);
+}
+
+// 抓取用户资料
+async function fetchProfile(username: string) {
+  const profile = await scraper.fetchUserProfile(username);
+  console.log('用户资料：', profile);
+}
+```
+
+## 开发命令
+
+```bash
+# 运行测试
+pnpm test
+
+# 代码检查
+pnpm run lint
+
+# 代码格式化
+pnpm run format
+```
+
+## 注意事项
+
+1. 请遵守 Twitter 的使用条款和 API 限制
+2. 建议适当设置抓取间隔，避免频繁请求
+3. 确保日志配置正确，以便追踪问题
+
+## 许可证
+
+ISC License

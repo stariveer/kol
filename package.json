@@ -32,6 +32,7 @@
     "typescript": "^5.8.2"
   },
   "dependencies": {
+    "@the-convocation/twitter-scraper": "^0.15.1",
     "axios": "^1.8.2",
     "playwright": "^1.51.0",
     "winston": "^3.17.0"
